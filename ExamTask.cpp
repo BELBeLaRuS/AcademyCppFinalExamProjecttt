@@ -52,41 +52,47 @@
  *  [output 6]: -1
  */
 
+#include <iostream>
+#include <string>
+using namespace std;
+
 const int MIN_MARK = 2;			// worst mark
 const int MAX_MARK = 5;			// best mark
 const int DAY_NUMBER = 7;		// number of days in the period
 const int WORST_MARK_BOUND = 3;	// bound of worst mark
 
-int findMaxFivePeriod(int grades[], int n) {
-    int maxCount = 0;
-    int startIdx = 0;
-    int currentCount = 0;
-    int currentStartIdx = 0;
-
-    for (int i = 0; i < n; i++) {
-        if (grades[i] != 2 && grades[i] != 3) {
-            if (grades[i] == 5) {
-                currentCount++;
-            }
-            if (currentCount > maxCount) {
-                maxCount = currentCount;
-                startIdx = currentStartIdx;
-            }
-        }
-        else {
-            currentCount = 0;
-            currentStartIdx = i + 1;
-        }
-    }
-    return startIdx;
-}
-
-
 int findBestMarkNumber(int* marks, int size) {
-    if (size < 2 || size > 5) {
+    if (size < 7) {
         return -1;
     }
-
-    int bestPeriodStartIdx = findMaxFivePeriod(marks, size);
-    return marks[bestPeriodStartIdx];
+    int count4 = 0;
+    for (int i = 0; i < size; i++) {
+        if (marks[i] == 4) { 
+            count4++; 
+        }
+        if (marks[i] < 2 || marks[i] > 5) {
+            return -1;
+        }
+    }
+    if (count4 == size) { 
+        return 0; 
+    }
+    int maxFives = 0;
+    for (int i = 0; i < size - 6; i++) {
+        bool temp = true;
+        int count5 = 0;
+        for (int j = i; j < i + 7; j++) {
+            if (marks[j] == 2 || marks[j] == 3) {
+                temp = false;
+                break;
+            }
+            if (marks[j] == 5) { 
+                count5++; 
+            };
+        }
+        if (temp) { 
+            maxFives = maxFives > count5 ? maxFives : count5; 
+        };
+    }
+    return maxFives > 0 ? maxFives : -1;
 }
